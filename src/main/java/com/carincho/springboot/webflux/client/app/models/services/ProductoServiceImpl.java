@@ -24,12 +24,12 @@ import reactor.core.publisher.Mono;
 public class ProductoServiceImpl implements ProductoService{
 	
 	@Autowired
-	private WebClient client;
+	private WebClient.Builder client;
 
 	@Override
 	public Flux<Producto> findAll() {
 		
-		return client.get()
+		return client.build().get()
 				.accept(APPLICATION_JSON)
 				.exchangeToFlux(response -> response.bodyToFlux(Producto.class));
 	}
@@ -40,7 +40,7 @@ public class ProductoServiceImpl implements ProductoService{
 		Map<String, Object>params = new HashMap<String, Object>();
 		params.put("id", id);
 		
-		return client.get()
+		return client.build().get()
 				.uri("/{id}", params)
 				.accept(APPLICATION_JSON)
 				.retrieve()
@@ -51,7 +51,7 @@ public class ProductoServiceImpl implements ProductoService{
 
 	@Override
 	public Mono<Producto> save(Producto producto) {
-		return client.post()
+		return client.build().post()
 				.accept(APPLICATION_JSON)
 				.contentType(APPLICATION_JSON)
 //				.body(fromValue(producto))//Este es con inserters
@@ -64,7 +64,7 @@ public class ProductoServiceImpl implements ProductoService{
 	public Mono<Producto> update(Producto producto, String id) {
 				
 		
-		return client.put()
+		return client.build().put()
 				.uri("/{id}",Collections.singletonMap("id", id))
 				.accept(APPLICATION_JSON)
 				.contentType(APPLICATION_JSON)
@@ -77,7 +77,7 @@ public class ProductoServiceImpl implements ProductoService{
 	@Override
 	public Mono<Void> delete(String id) {
 		
-		return client.delete()
+		return client.build().delete()
 				.uri("/{id}",Collections.singletonMap("id", id))
 				.retrieve()
 				.bodyToMono(Void.class);
@@ -94,7 +94,7 @@ public class ProductoServiceImpl implements ProductoService{
 		
 		
 		
-		return client.post()
+		return client.build().post()
 				.uri("/upload/{id}", Collections.singletonMap("id", id))
 				.contentType(MULTIPART_FORM_DATA)
 				.bodyValue(parts.build())
